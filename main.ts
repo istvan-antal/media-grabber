@@ -13,7 +13,8 @@ const createWindow = () => {
         title: app.getName()
     });
 
-    mainWindow.loadURL(join('file://', __dirname, '/app/index.html'));
+    // mainWindow.loadURL(join('file://', __dirname, '/app/index.html'));
+    mainWindow.loadURL(join('http://localhost:9000/'));
 
     app.on('window-all-closed', function () {
         app.quit();

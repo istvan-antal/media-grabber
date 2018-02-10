@@ -4,9 +4,9 @@
   "description": "A UI for youtube-dl.",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
+    "start": "node dev-server.js",
     "test": "npm test",
-    "prestart": "tsc main.ts"
+    "prestart": "tsc main.ts && tsc dev-server.ts"
   },
   "keywords": [
     "youtube-dl",
@@ -18,9 +18,20 @@
   "license": "MIT",
   "dependencies": {
     "@types/electron": "^1.6.10",
+    "@types/html-webpack-plugin": "^2.30.1",
+    "@types/react": "^16.0.36",
+    "@types/react-dom": "^16.0.3",
+    "@types/webpack": "^3.8.5",
+    "@types/webpack-dev-server": "^2.9.2",
     "electron": "^1.8.2",
     "electron-packager": "^11.0.0",
-    "typescript": "^2.7.1"
+    "html-webpack-plugin": "^2.30.1",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "ts-loader": "^3.5.0",
+    "typescript": "^2.7.1",
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.11.1"
   },
   "repository": {
     "type": "git",
