@@ -9,7 +9,10 @@ spawn('electron', ['.'], {
 });
 
 const compiler = webpack({
-    entry: './app/index.tsx',
+    entry: [
+        require.resolve('react-dev-utils/webpackHotDevClient'),
+        './app/index.tsx',
+    ],
     output: {
         path: resolve(__dirname, 'dist'),
         filename: 'app.bundle.js'
@@ -23,13 +26,19 @@ const compiler = webpack({
     resolve: {
         extensions: ['.js', '.json', '.jsx', '.ts', '.tsx'],
     },
-    plugins: [new HtmlWebpackPlugin({
-        template: 'app/index.html'
-    })],
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: 'app/index.html'
+        }),
+        new webpack.NamedModulesPlugin(),
+        new webpack.HotModuleReplacementPlugin(),
+    ],
 });
 const devServer = new WebpackDevServer(compiler, {
     contentBase: join(__dirname, "dist"),
     compress: true,
+    hot: true,
+    watchContentBase: true,
 });
 devServer.listen(9000, '0.0.0.0', (err: any) => {
 

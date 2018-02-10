@@ -4,7 +4,7 @@ export default class App extends React.Component {
     render() {
         return (
             <div>
-                Media Grabber
+                <input type="text" placeholder="URL" />
             </div>
         );
     }
