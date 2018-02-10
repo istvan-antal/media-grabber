@@ -1,0 +1,29 @@
+{
+  "name": "media-grabber",
+  "version": "0.0.1",
+  "description": "A UI for youtube-dl.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "npm test",
+    "prestart": "tsc main.ts"
+  },
+  "keywords": [
+    "youtube-dl",
+    "ui",
+    "youtube",
+    "download"
+  ],
+  "author": "István Miklós Antal",
+  "license": "MIT",
+  "dependencies": {
+    "@types/electron": "^1.6.10",
+    "electron": "^1.8.2",
+    "electron-packager": "^11.0.0",
+    "typescript": "^2.7.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:istvan-antal/media-grabber.git"
+  }
+}
