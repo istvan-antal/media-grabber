@@ -9,10 +9,16 @@ export const backendMiddleware: Middleware = <AppState>(store: MiddlewareAPI<App
 
     switch (action.type) {
         case AppActionType.Download:
-            ipcRenderer.send('clientAction', [result, action]);
+            ipcRenderer.send('clientAction', [store.getState(), action]);
     }
 
     return result
 }
 
-export default createStore(app, applyMiddleware(backendMiddleware));
+const store = createStore(app, applyMiddleware(backendMiddleware));
+
+ipcRenderer.on('backendAction', (e: any, action: AppAction) => {
+    store.dispatch(action);
+});
+
+export default store;
