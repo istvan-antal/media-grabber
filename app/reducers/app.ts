@@ -8,6 +8,7 @@ export interface AppState {
     downloads: Array<{
         id: number;
         url: string;
+        title?: string;
         destination: string;
         progress: number;
         state: DownloadState;
@@ -24,14 +25,33 @@ const initialState = {
 
 export const app = (state: AppState = initialState, action: AppAction): AppState => {
     switch (action.type) {
+        case AppActionType.SettingsLoad:
+            return {
+                ...state,
+                destination: action.value.destination,
+            };
         case AppActionType.UpdateDownloadProgress:
+            console.log('UPDATE');
             return {
                 ...state,
                 downloads: state.downloads.map(item => {
-                    if (item.id = action.downloadId) {
+                    if (item.id === action.downloadId) {
                         return {
                             ...item,
                             progress: action.progress,
+                        };
+                    }
+                    return item;
+                }),
+            };
+        case AppActionType.UpdateDownloadTitle:
+            return {
+                ...state,
+                downloads: state.downloads.map(item => {
+                    if (item.id === action.downloadId) {
+                        return {
+                            ...item,
+                            title: action.title,
                         };
                     }
                     return item;
@@ -41,7 +61,7 @@ export const app = (state: AppState = initialState, action: AppAction): AppState
         return {
             ...state,
             downloads: state.downloads.map(item => {
-                if (item.id = action.downloadId) {
+                if (item.id === action.downloadId) {
                     return {
                         ...item,
                         state: action.state,
@@ -54,11 +74,11 @@ export const app = (state: AppState = initialState, action: AppAction): AppState
         return {
             ...state,
             url: '',
-            downloadId: state.downloadId + 1,
+            downloadId: action.downloadId,
             downloads: [
                 ...state.downloads,
                 {
-                    id: state.downloadId + 1,
+                    id: action.downloadId,
                     url: state.url,
                     destination: state.destination,
                     progress: 0,

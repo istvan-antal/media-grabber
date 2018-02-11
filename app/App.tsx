@@ -24,17 +24,17 @@ export default class App extends React.Component<Props> {
                         <option value="video">Video</option>
                     </select>
                     <input onChange={e => { this.props.actions.setDestination(e.target.value); }} value={this.props.destination} type="text" placeholder="Destination" />
-                    <input onClick={this.props.actions.download} type="button" value="Download" />
+                    <input onClick={e => { this.props.actions.download(this.props.downloadId + 1); }} type="button" value="Download" />
                 </form>
                 <table>
                     <tbody>
-                        {this.props.downloads.map(download => (
+                        {this.props.downloads.slice().reverse().map(download => (
                             <tr key={download.id}>
                                 <td>
-                                    {download.url}
+                                    {download.title || download.url}
                                 </td>
                                 <td>
-                                    {download.progress}
+                                    <progress value={download.progress} max="100" />
                                 </td>
                                 <td>
                                     {download.state}

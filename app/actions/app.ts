@@ -4,7 +4,9 @@ export enum AppActionType {
     SetType = 'setType',
     SetDestination = 'setDestination',
     UpdateDownloadState = 'updateDownloadState',
+    UpdateDownloadTitle = 'updateDownloadTitle',
     UpdateDownloadProgress = 'updateDownloadProgress',
+    SettingsLoad = 'settingsLoad',
 }
 
 export enum DownloadState {
@@ -15,6 +17,7 @@ export enum DownloadState {
 
 interface DownloadAction {
     type: AppActionType.Download;
+    downloadId: number;
 }
 
 interface EnterUrlAction {
@@ -32,6 +35,12 @@ interface SetDestinationAction {
     value: string;
 }
 
+interface UpdateDownloadTitleAction {
+    type: AppActionType.UpdateDownloadTitle;
+    downloadId: number;
+    title: string;
+}
+
 interface UpdateDownloadStateAction {
     type: AppActionType.UpdateDownloadState;
     downloadId: number;
@@ -44,24 +53,41 @@ interface UpdateDownloadProgressAction {
     progress: number;
 }
 
+interface SettingsLoadAction {
+    type: AppActionType.SettingsLoad,
+    value: {
+        destination: string;
+    };
+}
+
 export enum DownloadType {
     Video = 'video',
 }
 
 export type AppAction = DownloadAction | EnterUrlAction | SetTypeAction |
-    SetDestinationAction | UpdateDownloadStateAction | UpdateDownloadProgressAction;
+    SetDestinationAction | UpdateDownloadStateAction | UpdateDownloadTitleAction | UpdateDownloadProgressAction |
+    SettingsLoadAction;
 
 export const updateDownloadProgress = (downloadId: number, progress: number) => ({
-    type: AppActionType.UpdateDownloadState,
+    type: AppActionType.UpdateDownloadProgress,
     downloadId,
     progress,
+});
+export const updateDownloadTitle = (downloadId: number, title: string) => ({
+    type: AppActionType.UpdateDownloadTitle,
+    downloadId,
+    title,
 });
 export const updateDownloadState = (downloadId: number, state: DownloadState) => ({
     type: AppActionType.UpdateDownloadState,
     downloadId,
     state,
 });
-export const download = (): DownloadAction => ({ type: AppActionType.Download });
+export const settingsLoad = (value: SettingsLoadAction['value']) => ({
+    type: AppActionType.SettingsLoad,
+    value,
+});
+export const download = (downloadId: number): DownloadAction => ({ type: AppActionType.Download, downloadId });
 export const enterUrl = (url: string): EnterUrlAction => ({ type: AppActionType.EnterUrl, value: url });
 export const setType = (type: DownloadType): SetTypeAction => ({ type: AppActionType.SetType, value: type });
 export const setDestination = (path: string): SetDestinationAction => ({ type: AppActionType.SetDestination, value: path });

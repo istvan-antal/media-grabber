@@ -4,8 +4,12 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 import { resolve, join } from 'path';
 import { spawn } from 'child_process';
 
-spawn('electron', ['.'], {
+const appProcess = spawn('electron', ['.'], {
     stdio: 'inherit',
+});
+
+appProcess.on('close', () => {
+    process.exit();
 });
 
 const compiler = webpack({

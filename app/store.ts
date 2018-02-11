@@ -4,10 +4,15 @@ import { app, AppState } from './reducers/app';
 const { remote, ipcRenderer } = require('electron');
 
 export const backendMiddleware: Middleware = <AppState>(store: MiddlewareAPI<AppState>) => (next: Dispatch<AppState>) => (originalAction: any) => {
+    ipcRenderer.send('clientLog', JSON.stringify(store.getState()));
     const result = next(originalAction);
-    const action: AppAction = originalAction;
+    const action: AppAction = originalAction as any;
+
+    ipcRenderer.send('clientLog', JSON.stringify(action));
+    
 
     switch (action.type) {
+        case AppActionType.SetDestination:
         case AppActionType.Download:
             ipcRenderer.send('clientAction', [store.getState(), action]);
     }
@@ -15,10 +20,12 @@ export const backendMiddleware: Middleware = <AppState>(store: MiddlewareAPI<App
     return result
 }
 
-const store = createStore(app, applyMiddleware(backendMiddleware));
+const store = createStore(app as any, applyMiddleware(backendMiddleware));
 
 ipcRenderer.on('backendAction', (e: any, action: AppAction) => {
     store.dispatch(action);
 });
+
+ipcRenderer.send('clientReady', []);
 
 export default store;
