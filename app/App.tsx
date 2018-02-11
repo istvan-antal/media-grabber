@@ -18,7 +18,7 @@ export default class App extends React.Component<Props> {
                 <select onChange={e => { this.props.actions.setType(e.target.value as DownloadType); }} value={this.props.type}>
                     <option value="video">Video</option>
                 </select>
-                <input type="submit" value="Download" />
+                <input onClick={this.props.actions.download} type="button" value="Download" />
             </form>
         );
     }

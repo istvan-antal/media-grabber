@@ -1,3 +1,4 @@
 /node_modules
 /main.js
 /dev-server.js
+/app/**/*.js

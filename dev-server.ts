@@ -33,6 +33,19 @@ const compiler = webpack({
         new webpack.NamedModulesPlugin(),
         new webpack.HotModuleReplacementPlugin(),
     ],
+    externals: [
+        (function () {
+            var IGNORES = [
+                'electron'
+            ];
+            return function (context: any, request: any, callback: any) {
+                if (IGNORES.indexOf(request) >= 0) {
+                    return callback(null, "require('" + request + "')");
+                }
+                return callback();
+            };
+        })()
+    ]
 });
 const devServer = new WebpackDevServer(compiler, {
     contentBase: join(__dirname, "dist"),
