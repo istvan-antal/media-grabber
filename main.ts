@@ -7,9 +7,9 @@ if (process.mas) {
 
 const createWindow = () => {
     const mainWindow = new BrowserWindow({
-        width: 1080,
-        minWidth: 680,
-        height: 840,
+        width: 300,
+        minWidth: 300,
+        height: 200,
         title: app.getName()
     });
 
