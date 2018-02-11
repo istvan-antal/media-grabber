@@ -2,3 +2,7 @@
 /main.js
 /dev-server.js
 /app/**/*.js
+/out
+/*.js
+/dist
+.DS_Store

@@ -1,4 +1,4 @@
-import { BrowserWindow, app, ipcMain } from 'electron';
+import { BrowserWindow, Menu, app, ipcMain } from 'electron';
 import { join } from 'path';
 import { AppAction, AppActionType, updateDownloadState, DownloadState, updateDownloadProgress, settingsLoad, updateDownloadTitle } from './app/actions/app';
 import { AppState } from './app/reducers/app';
@@ -83,6 +83,55 @@ ipcMain.on('clientAction', (event: any, args: [AppState, AppAction]) => {
 });
 
 const createWindow = () => {
+    const template = [
+  {
+    label: 'Edit',
+    submenu: [
+      {role: 'undo'},
+      {role: 'redo'},
+      {type: 'separator'},
+      {role: 'cut'},
+      {role: 'copy'},
+      {role: 'paste'},
+      {role: 'pasteandmatchstyle'},
+      {role: 'delete'},
+      {role: 'selectall'}
+    ]
+  },
+  {
+    label: 'View',
+    submenu: [
+      {role: 'reload'},
+      {role: 'forcereload'},
+      {role: 'toggledevtools'},
+      {type: 'separator'},
+      {role: 'resetzoom'},
+      {role: 'zoomin'},
+      {role: 'zoomout'},
+      {type: 'separator'},
+      {role: 'togglefullscreen'}
+    ]
+  },
+  {
+    role: 'window',
+    submenu: [
+      {role: 'minimize'},
+      {role: 'close'}
+    ]
+  },
+  {
+    role: 'help',
+    submenu: [
+      {
+        label: 'Learn More',
+        click () { require('electron').shell.openExternal('https://electronjs.org') }
+      }
+    ]
+  }
+];
+    const menu = Menu.buildFromTemplate(template as any);
+    Menu.setApplicationMenu(menu);
+
     const mainWindow = new BrowserWindow({
         width: 400,
         minWidth: 400,
@@ -90,8 +139,10 @@ const createWindow = () => {
         title: app.getName()
     });
 
-    // mainWindow.loadURL(join('file://', __dirname, '/app/index.html'));
-    mainWindow.loadURL(join('http://localhost:9000/'));
+    const mainUrl = process.env.MAIN_APP_URL || join('file://', __dirname, '/dist/index.html');
+    console.log(`Loading: ${mainUrl}`);
+
+    mainWindow.loadURL(mainUrl);
     // mainWindow.webContents.openDevTools();
 
     app.on('window-all-closed', function () {

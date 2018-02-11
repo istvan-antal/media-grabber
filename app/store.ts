@@ -8,8 +8,7 @@ export const backendMiddleware: Middleware = <AppState>(store: MiddlewareAPI<App
     const result = next(originalAction);
     const action: AppAction = originalAction as any;
 
-    ipcRenderer.send('clientLog', JSON.stringify(action));
-    
+    // ipcRenderer.send('clientLog', JSON.stringify(action));
 
     switch (action.type) {
         case AppActionType.SetDestination:

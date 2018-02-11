@@ -6,7 +6,11 @@
   "scripts": {
     "start": "node dev-server.js",
     "test": "npm test",
-    "prestart": "tsc main.ts && tsc dev-server.ts"
+    "build": "node build.js",
+    "prestart": "tsc main.ts && tsc dev-server.ts",
+    "prebuild": "tsc main.ts && tsc build.ts",
+    "package:mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --out=out",
+    "prepackage:mac": "npm run build"
   },
   "keywords": [
     "youtube-dl",
