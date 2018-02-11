@@ -23,7 +23,7 @@ const compiler = webpack({
     },
     module: {
         rules: [
-            // { test: /\.css$/, use: 'css-loader' },
+            { test: /\.css$/, use: ['style-loader', 'css-loader'] },
             { test: /\.tsx?$/, use: 'ts-loader' }
         ]
     },

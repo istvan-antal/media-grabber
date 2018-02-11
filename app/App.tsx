@@ -4,6 +4,7 @@ import {
     download, enterUrl, setType, setDestination,
     DownloadType,
 } from './actions/app';
+import './App.css';
 
 interface Props extends AppState {
     actions: {
