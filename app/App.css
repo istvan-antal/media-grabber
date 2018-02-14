@@ -1,3 +1,42 @@
-input {
+body {
+    color: #FFF;
+    background-color: rgb(41, 46, 49);
+    font-size: 14px;
+}
+
+input[type="text"] {
     width: 300px;
+    padding: 4px;
+    margin: 4px 8px;
+    color: #FFF;
+    background-color: rgb(59, 65, 68);
+    border: none;
+}
+
+input[type="button"] {
+    padding: 4px 8px;
+    margin: 4px 8px;
+    color: #FFF;
+    background-color: rgb(59, 65, 68);
+    border: none;
+}
+
+select {
+    padding: 4px;
+    margin: 4px 8px;
+    color: #FFF;
+    background-color: rgb(59, 65, 68);
+    border: none;
+}
+
+table {
+    margin: 10px 8px;
+}
+
+td {
+    padding-bottom: 8px;
+}
+
+.inProgress {
+    background-color: rgb(131, 106, 60);
 }

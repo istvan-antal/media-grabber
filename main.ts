@@ -21,9 +21,7 @@ if (!existsSync(settingsFile)) {
 
 const settings = JSON.parse(readFileSync(settingsFile).toString());
 
-if (process.mas) {
-    app.setName('Media Grabber');
-}
+app.setName('Media Grabber');
 
 ipcMain.on('clientReady', (event: any) => {
     event.sender.send('backendAction', settingsLoad(settings));
