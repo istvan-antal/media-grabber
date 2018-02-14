@@ -62,7 +62,15 @@ interface SettingsLoadAction {
 
 export enum DownloadType {
     Video = 'video',
+    Music = 'music',
 }
+
+export const downloadTypes: {
+    [key in DownloadType]: string;
+} = {
+    [DownloadType.Video]: 'Video',
+    [DownloadType.Music]: 'Music',
+};
 
 export type AppAction = DownloadAction | EnterUrlAction | SetTypeAction |
     SetDestinationAction | UpdateDownloadStateAction | UpdateDownloadTitleAction | UpdateDownloadProgressAction |

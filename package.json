@@ -7,9 +7,9 @@
     "start": "node dev-server.js",
     "test": "npm test",
     "build": "node build.js",
-    "prestart": "tsc main.ts && tsc dev-server.ts",
-    "prebuild": "tsc main.ts && tsc build.ts",
-    "package:mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --out=out",
+    "prestart": "tsc main.ts && tsc --lib es2015 dev-server.ts",
+    "prebuild": "tsc main.ts && tsc --lib es2015 build.ts",
+    "package:mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=icon.icns --out=out",
     "prepackage:mac": "npm run build"
   },
   "keywords": [

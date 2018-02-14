@@ -3,8 +3,9 @@ const WebpackDevServer = require('webpack-dev-server');
 
 import { join } from 'path';
 import { spawn } from 'child_process';
+import './install';
 
-process.env.MAIN_APP_URL = 'http://localhost:9000/';
+process.env.MAIN_APP_URL = 'http://localhost:9001/';
 
 const appProcess = spawn('electron', ['.'], {
     stdio: 'inherit',
@@ -21,6 +22,6 @@ const devServer = new WebpackDevServer(create({ hmr: true }), {
     hot: true,
     watchContentBase: true,
 });
-devServer.listen(9000, '0.0.0.0', (err: any) => {
+devServer.listen(9001, '0.0.0.0', (err: any) => {
 
 });

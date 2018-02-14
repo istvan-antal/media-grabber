@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { downloadTypes } from './actions/app';
 import { AppState } from './reducers/app';
 import {
     download, enterUrl, setType, setDestination,
@@ -22,7 +23,9 @@ export default class App extends React.Component<Props> {
                 <form>
                     <input onChange={e => { this.props.actions.enterUrl(e.target.value); }} value={this.props.url} type="text" placeholder="URL" />
                     <select onChange={e => { this.props.actions.setType(e.target.value as DownloadType); }} value={this.props.type}>
-                        <option value="video">Video</option>
+                        {Object.keys(downloadTypes).map(key => (
+                            <option value={key}>{downloadTypes[key as DownloadType]}</option>
+                        ))}
                     </select>
                     <input onChange={e => { this.props.actions.setDestination(e.target.value); }} value={this.props.destination} type="text" placeholder="Destination" />
                     <input onClick={e => { this.props.actions.download(this.props.downloadId + 1); }} type="button" value="Download" />

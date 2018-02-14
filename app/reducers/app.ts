@@ -7,6 +7,7 @@ export interface AppState {
     downloadId: number;
     downloads: Array<{
         id: number;
+        type: DownloadType;
         url: string;
         title?: string;
         destination: string;
@@ -31,7 +32,6 @@ export const app = (state: AppState = initialState, action: AppAction): AppState
                 destination: action.value.destination,
             };
         case AppActionType.UpdateDownloadProgress:
-            console.log('UPDATE');
             return {
                 ...state,
                 downloads: state.downloads.map(item => {
@@ -79,12 +79,18 @@ export const app = (state: AppState = initialState, action: AppAction): AppState
                 ...state.downloads,
                 {
                     id: action.downloadId,
+                    type: state.type,
                     url: state.url,
                     destination: state.destination,
                     progress: 0,
                     state: DownloadState.Started,
                 }
             ],
+        };
+        case AppActionType.SetType:
+        return {
+            ...state,
+            type: action.value,
         };
         case AppActionType.EnterUrl:
         return {

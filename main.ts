@@ -1,9 +1,13 @@
 import { BrowserWindow, Menu, app, ipcMain } from 'electron';
-import { join } from 'path';
-import { AppAction, AppActionType, updateDownloadState, DownloadState, updateDownloadProgress, settingsLoad, updateDownloadTitle } from './app/actions/app';
+import { join, dirname } from 'path';
+import { AppAction, AppActionType, updateDownloadState, DownloadState, updateDownloadProgress, settingsLoad, updateDownloadTitle, DownloadType } from './app/actions/app';
 import { AppState } from './app/reducers/app';
 import { createWriteStream, existsSync, writeFileSync, readFileSync } from 'fs';
+import { platform } from 'os';
 const youtubedl = require('youtube-dl');
+const arch = (platform() === 'win32') ? 'win64' : 'macos64';
+
+process.env.PATH += `:${__dirname}/bin/${arch}`;
 
 const userDataPath = app.getPath('userData');
 const settingsFile = `${userDataPath}/settings.json`;
@@ -25,9 +29,11 @@ ipcMain.on('clientReady', (event: any) => {
     event.sender.send('backendAction', settingsLoad(settings));
 });
 
+/*
 ipcMain.on('clientLog', (event: any, message: string) => {
     console.log(message);
 });
+*/
 
 ipcMain.on('clientAction', (event: any, args: [AppState, AppAction]) => {
     const state = args[0];
@@ -36,10 +42,25 @@ ipcMain.on('clientAction', (event: any, args: [AppState, AppAction]) => {
 
     switch (action.type) {
         case AppActionType.Download:
-        const url = state.downloads.filter(item => item.id === action.downloadId)[0]!.url;
+        const currentDownload = state.downloads.filter(item => item.id === action.downloadId)[0]!;
         event.sender.send('backendAction', updateDownloadState(action.downloadId, DownloadState.InProgress));
-        const video = youtubedl(
-            url,
+
+        if (currentDownload.type === DownloadType.Music) {
+            youtubedl.exec(
+                currentDownload.url,
+                // Optional arguments passed to youtube-dl.
+                ['-x', '--add-metadata', '--embed-thumbnail', '--audio-format', 'mp3'],
+                // Additional options can be given for calling `child_process.execFile()`.
+                { cwd: state.destination, env: process.env }, (err: any, output: any) => {
+                    console.log(err, output);
+                    event.sender.send('backendAction', updateDownloadProgress(action.downloadId, 100));
+                    event.sender.send('backendAction', updateDownloadState(action.downloadId, DownloadState.Complete));
+                });
+                return;
+        }
+
+        const media = youtubedl(
+            currentDownload.url,
             // Optional arguments passed to youtube-dl.
             ['--format=18'],
             // Additional options can be given for calling `child_process.execFile()`.
@@ -48,7 +69,7 @@ ipcMain.on('clientAction', (event: any, args: [AppState, AppAction]) => {
         let size = 0;
         let fileName: string;
         // Will be called when the download starts.
-        video.on('info', function (info: any) {
+        media.on('info', function (info: any) {
             console.log(info.fulltitle);
             console.log('Download started');
             console.log('filename: ' + info.filename);
@@ -58,11 +79,11 @@ ipcMain.on('clientAction', (event: any, args: [AppState, AppAction]) => {
 
             event.sender.send('backendAction', updateDownloadTitle(action.downloadId, info.fulltitle));
 
-            video.pipe(createWriteStream(join(state.destination, fileName)));
+            media.pipe(createWriteStream(join(state.destination, fileName)));
         });
 
         let pos = 0;
-        video.on('data', function data(chunk: any) {
+        media.on('data', function data(chunk: any) {
             pos += chunk.length;
             // `size` should not be 0 here.
             if (size) {
@@ -73,7 +94,7 @@ ipcMain.on('clientAction', (event: any, args: [AppState, AppAction]) => {
             }
         });
 
-        video.on('end', function () {
+        media.on('end', function () {
             event.sender.send('backendAction', updateDownloadState(action.downloadId, DownloadState.Complete));
         });
         case AppActionType.SetDestination:
@@ -83,58 +104,26 @@ ipcMain.on('clientAction', (event: any, args: [AppState, AppAction]) => {
 });
 
 const createWindow = () => {
-    const template = [
-  {
-    label: 'Edit',
-    submenu: [
-      {role: 'undo'},
-      {role: 'redo'},
-      {type: 'separator'},
-      {role: 'cut'},
-      {role: 'copy'},
-      {role: 'paste'},
-      {role: 'pasteandmatchstyle'},
-      {role: 'delete'},
-      {role: 'selectall'}
-    ]
-  },
-  {
-    label: 'View',
-    submenu: [
-      {role: 'reload'},
-      {role: 'forcereload'},
-      {role: 'toggledevtools'},
-      {type: 'separator'},
-      {role: 'resetzoom'},
-      {role: 'zoomin'},
-      {role: 'zoomout'},
-      {type: 'separator'},
-      {role: 'togglefullscreen'}
-    ]
-  },
-  {
-    role: 'window',
-    submenu: [
-      {role: 'minimize'},
-      {role: 'close'}
-    ]
-  },
-  {
-    role: 'help',
-    submenu: [
-      {
-        label: 'Learn More',
-        click () { require('electron').shell.openExternal('https://electronjs.org') }
-      }
-    ]
-  }
-];
+    const template = [{
+        label: 'Edit',
+        submenu: [
+            {role: 'undo'},
+            {role: 'redo'},
+            {type: 'separator'},
+            {role: 'cut'},
+            {role: 'copy'},
+            {role: 'paste'},
+            {role: 'pasteandmatchstyle'},
+            {role: 'delete'},
+            {role: 'selectall'}
+        ],
+    }];
     const menu = Menu.buildFromTemplate(template as any);
     Menu.setApplicationMenu(menu);
 
     const mainWindow = new BrowserWindow({
-        width: 400,
-        minWidth: 400,
+        width: 500,
+        minWidth: 500,
         height: 300,
         title: app.getName()
     });
