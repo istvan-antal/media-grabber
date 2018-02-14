@@ -9,7 +9,7 @@
     "build": "node build.js",
     "prestart": "tsc main.ts && tsc --lib es2015 dev-server.ts",
     "prebuild": "tsc main.ts && tsc --lib es2015 build.ts",
-    "package:mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=icon.icns --out=out",
+    "package:mac": "electron-packager . 'Media Grabber' --overwrite --platform=darwin --arch=x64 --icon=icon.icns --out=out",
     "prepackage:mac": "npm run build"
   },
   "keywords": [
@@ -20,30 +20,34 @@
   ],
   "author": "István Miklós Antal",
   "license": "MIT",
-  "dependencies": {
+  "devDependencies": {
     "@types/electron": "^1.6.10",
     "@types/html-webpack-plugin": "^2.30.1",
     "@types/react": "^16.0.36",
     "@types/react-dom": "^16.0.3",
     "@types/react-redux": "^5.0.14",
     "@types/redux": "^3.6.0",
+    "@types/rimraf": "^2.0.2",
     "@types/webpack": "^3.8.5",
     "@types/webpack-dev-server": "^2.9.2",
     "@types/youtube-dl": "^1.12.0",
     "css-loader": "^0.28.9",
-    "electron": "^1.8.2",
     "electron-packager": "^11.0.0",
     "html-webpack-plugin": "^2.30.1",
-    "react": "^16.2.0",
     "react-dev-utils": "^5.0.0",
-    "react-dom": "^16.2.0",
-    "react-redux": "^5.0.6",
-    "redux": "^3.7.2",
+    "rimraf": "^2.6.2",
     "style-loader": "^0.20.1",
     "ts-loader": "^3.5.0",
     "typescript": "^2.7.1",
     "webpack": "^3.10.0",
-    "webpack-dev-server": "^2.11.1",
+    "webpack-dev-server": "^2.11.1"
+  },
+  "dependencies": {
+    "electron": "^1.8.2",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-redux": "^5.0.6",
+    "redux": "^3.7.2",
     "youtube-dl": "^1.12.2"
   },
   "repository": {

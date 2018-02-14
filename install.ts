@@ -4,6 +4,8 @@ import { execFileSync } from 'child_process';
 import { basename } from 'path';
 import { platform } from 'os';
 
+const rimraf = require('rimraf');
+
 const download = (url: string, destination: string) => new Promise((resolve, reject) => {
     const file = createWriteStream(destination);
     get(url, (response) => {
@@ -39,11 +41,15 @@ if (!existsSync(`./bin/${arch}`)) {
             cwd: `./bin/${arch}`,
             stdio: 'inherit',
         });
+        unlink(`./bin/${arch}/ffmpeg.zip`, () => {
+        });
 
         const ext = (arch === 'win64') ? '.exe' : '';
         copyFileSync(`./bin/${arch}/${basename(binaries[arch], '.zip')}/bin/ffmpeg${ext}`, `./bin/${arch}/ffmpeg${ext}`);
-        copyFileSync(`./bin/${arch}/${basename(binaries[arch], '.zip')}/bin/ffplay${ext}`, `./bin/${arch}/ffplay${ext}`);
+        // copyFileSync(`./bin/${arch}/${basename(binaries[arch], '.zip')}/bin/ffplay${ext}`, `./bin/${arch}/ffplay${ext}`);
         copyFileSync(`./bin/${arch}/${basename(binaries[arch], '.zip')}/bin/ffprobe${ext}`, `./bin/${arch}/ffprobe${ext}`);
+        rimraf(`./bin/${arch}/${basename(binaries[arch], '.zip')}`, () => {
+        });
         // copyFileSync(`./bin/${arch}/${basename(binaries[arch], '.zip')}/bin/ffserver${ext}`, `./bin/${arch}/ffserver${ext}`);
     });
 }

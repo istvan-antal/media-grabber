@@ -23,84 +23,6 @@ const settings = JSON.parse(readFileSync(settingsFile).toString());
 
 app.setName('Media Grabber');
 
-ipcMain.on('clientReady', (event: any) => {
-    event.sender.send('backendAction', settingsLoad(settings));
-});
-
-/*
-ipcMain.on('clientLog', (event: any, message: string) => {
-    console.log(message);
-});
-*/
-
-ipcMain.on('clientAction', (event: any, args: [AppState, AppAction]) => {
-    const state = args[0];
-    const action = args[1];
-    // tray.setTitle(arg);
-
-    switch (action.type) {
-        case AppActionType.Download:
-        const currentDownload = state.downloads.filter(item => item.id === action.downloadId)[0]!;
-        event.sender.send('backendAction', updateDownloadState(action.downloadId, DownloadState.InProgress));
-
-        if (currentDownload.type === DownloadType.Music) {
-            youtubedl.exec(
-                currentDownload.url,
-                // Optional arguments passed to youtube-dl.
-                ['-x', '--add-metadata', '--embed-thumbnail', '--audio-format', 'mp3'],
-                // Additional options can be given for calling `child_process.execFile()`.
-                { cwd: state.destination, env: process.env }, (err: any, output: any) => {
-                    console.log(err, output);
-                    event.sender.send('backendAction', updateDownloadProgress(action.downloadId, 100));
-                    event.sender.send('backendAction', updateDownloadState(action.downloadId, DownloadState.Complete));
-                });
-                return;
-        }
-
-        const media = youtubedl(
-            currentDownload.url,
-            // Optional arguments passed to youtube-dl.
-            ['--format=18'],
-            // Additional options can be given for calling `child_process.execFile()`.
-            { cwd: __dirname });
-
-        let size = 0;
-        let fileName: string;
-        // Will be called when the download starts.
-        media.on('info', function (info: any) {
-            console.log(info.fulltitle);
-            console.log('Download started');
-            console.log('filename: ' + info.filename);
-            console.log('size: ' + info.size);
-            size = info.size;
-            fileName = info.filename;
-
-            event.sender.send('backendAction', updateDownloadTitle(action.downloadId, info.fulltitle));
-
-            media.pipe(createWriteStream(join(state.destination, fileName)));
-        });
-
-        let pos = 0;
-        media.on('data', function data(chunk: any) {
-            pos += chunk.length;
-            // `size` should not be 0 here.
-            if (size) {
-                const percent = (pos / size * 100);
-                // process.stdout.cursorTo(0);
-                // process.stdout.clearLine(1);
-                event.sender.send('backendAction', updateDownloadProgress(action.downloadId, percent));
-            }
-        });
-
-        media.on('end', function () {
-            event.sender.send('backendAction', updateDownloadState(action.downloadId, DownloadState.Complete));
-        });
-        case AppActionType.SetDestination:
-            settings.destination = state.destination;
-            writeFileSync(settingsFile, JSON.stringify(settings));
-    }
-});
-
 const createWindow = () => {
     const template = [{
         label: 'Edit',
@@ -128,6 +50,98 @@ const createWindow = () => {
 
     const mainUrl = process.env.MAIN_APP_URL || join('file://', __dirname, '/dist/index.html');
     console.log(`Loading: ${mainUrl}`);
+
+    ipcMain.on('clientReady', (event: any) => {
+        event.sender.send('backendAction', settingsLoad(settings));
+    });
+
+    /*
+    ipcMain.on('clientLog', (event: any, message: string) => {
+        console.log(message);
+    });
+    */
+
+    const updateProgress = (state: AppState) => {
+        const items = state.downloads.filter(item => item.state !== DownloadState.Complete);
+        
+        if (!items.length) {
+            mainWindow.setProgressBar(-1);
+            return;
+        }
+
+        mainWindow.setProgressBar(
+            items.map(item => item.progress).reduce((a, b) => a + b, 0) / (items.length * 100)
+        );
+    };
+
+    ipcMain.on('clientAction', (event: any, args: [AppState, AppAction]) => {
+        const state = args[0];
+        const action = args[1];
+        // tray.setTitle(arg);
+        updateProgress(state);
+
+        switch (action.type) {
+            case AppActionType.Download:
+                const currentDownload = state.downloads.filter(item => item.id === action.downloadId)[0]!;
+                event.sender.send('backendAction', updateDownloadState(action.downloadId, DownloadState.InProgress));
+                updateProgress(state);
+                if (currentDownload.type === DownloadType.Music) {
+                    youtubedl.exec(
+                        currentDownload.url,
+                        // Optional arguments passed to youtube-dl.
+                        ['-x', '--add-metadata', '--embed-thumbnail', '--audio-format', 'mp3'],
+                        // Additional options can be given for calling `child_process.execFile()`.
+                        { cwd: state.destination, env: process.env }, (err: any, output: any) => {
+                            console.log(err, output);
+                            event.sender.send('backendAction', updateDownloadProgress(action.downloadId, 100));
+                            event.sender.send('backendAction', updateDownloadState(action.downloadId, DownloadState.Complete));
+                        });
+                    return;
+                }
+
+                const media = youtubedl(
+                    currentDownload.url,
+                    // Optional arguments passed to youtube-dl.
+                    ['--format=18'],
+                    // Additional options can be given for calling `child_process.execFile()`.
+                    { cwd: __dirname });
+
+                let size = 0;
+                let fileName: string;
+                // Will be called when the download starts.
+                media.on('info', function (info: any) {
+                    console.log(info.fulltitle);
+                    console.log('Download started');
+                    console.log('filename: ' + info.filename);
+                    console.log('size: ' + info.size);
+                    size = info.size;
+                    fileName = info.filename;
+
+                    event.sender.send('backendAction', updateDownloadTitle(action.downloadId, info.fulltitle));
+
+                    media.pipe(createWriteStream(join(state.destination, fileName)));
+                });
+
+                let pos = 0;
+                media.on('data', function data(chunk: any) {
+                    pos += chunk.length;
+                    // `size` should not be 0 here.
+                    if (size) {
+                        const percent = (pos / size * 100);
+                        // process.stdout.cursorTo(0);
+                        // process.stdout.clearLine(1);
+                        event.sender.send('backendAction', updateDownloadProgress(action.downloadId, percent));
+                    }
+                });
+
+                media.on('end', function () {
+                    event.sender.send('backendAction', updateDownloadState(action.downloadId, DownloadState.Complete));
+                });
+            case AppActionType.SetDestination:
+                settings.destination = state.destination;
+                writeFileSync(settingsFile, JSON.stringify(settings));
+        }
+    });
 
     mainWindow.loadURL(mainUrl);
     // mainWindow.webContents.openDevTools();
