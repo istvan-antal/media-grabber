@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { downloadTypes } from './actions/app';
+import { downloadTypes, browseForDestination } from './actions/app';
 import { AppState } from './reducers/app';
 import {
     download, enterUrl, setType, setDestination,
@@ -13,6 +13,7 @@ interface Props extends AppState {
         enterUrl: typeof enterUrl,
         setType: typeof setType,
         setDestination: typeof setDestination,
+        browseForDestination: typeof browseForDestination,
     };
 }
 
@@ -28,10 +29,13 @@ export default class App extends React.Component<Props> {
                                 <option value={key}>{downloadTypes[key as DownloadType]}</option>
                             ))}
                         </select>
-                        <input onClick={e => { this.props.actions.download(this.props.downloadId + 1); }} type="button" value="Download" />
+                        <input disabled={!this.props.destination} onClick={e => { this.props.actions.download(this.props.downloadId + 1); }} type="button" value="Download" />
                     </div>
                     <div className="row">
                         <input onChange={e => { this.props.actions.setDestination(e.target.value); }} value={this.props.destination} type="text" placeholder="Destination" />
+                        <button onClick={this.props.actions.browseForDestination}>
+                            Browse
+                        </button>
                     </div>
                 </form>
                 <table cellPadding="0" cellSpacing="0">

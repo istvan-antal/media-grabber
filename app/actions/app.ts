@@ -2,6 +2,7 @@ export enum AppActionType {
     Download = 'download',
     EnterUrl = 'enterUrl',
     SetType = 'setType',
+    BrowseForDestination = 'browseForDestination',
     SetDestination = 'setDestination',
     UpdateDownloadState = 'updateDownloadState',
     UpdateDownloadTitle = 'updateDownloadTitle',
@@ -28,6 +29,10 @@ interface EnterUrlAction {
 interface SetTypeAction {
     type: AppActionType.SetType;
     value: DownloadType;
+}
+
+interface BrowseForDestinationAction {
+    type: AppActionType.BrowseForDestination,
 }
 
 interface SetDestinationAction {
@@ -73,7 +78,8 @@ export const downloadTypes: {
 };
 
 export type AppAction = DownloadAction | EnterUrlAction | SetTypeAction |
-    SetDestinationAction | UpdateDownloadStateAction | UpdateDownloadTitleAction | UpdateDownloadProgressAction |
+    BrowseForDestinationAction | SetDestinationAction |
+    UpdateDownloadStateAction | UpdateDownloadTitleAction | UpdateDownloadProgressAction |
     SettingsLoadAction;
 
 export const updateDownloadProgress = (downloadId: number, progress: number) => ({
@@ -98,4 +104,5 @@ export const settingsLoad = (value: SettingsLoadAction['value']) => ({
 export const download = (downloadId: number): DownloadAction => ({ type: AppActionType.Download, downloadId });
 export const enterUrl = (url: string): EnterUrlAction => ({ type: AppActionType.EnterUrl, value: url });
 export const setType = (type: DownloadType): SetTypeAction => ({ type: AppActionType.SetType, value: type });
+export const browseForDestination = () => ({ type: AppActionType.BrowseForDestination });
 export const setDestination = (path: string): SetDestinationAction => ({ type: AppActionType.SetDestination, value: path });

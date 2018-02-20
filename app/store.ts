@@ -11,6 +11,7 @@ export const backendMiddleware: Middleware = <AppState>(store: MiddlewareAPI<App
     // ipcRenderer.send('clientLog', JSON.stringify(action));
 
     switch (action.type) {
+        case AppActionType.BrowseForDestination:
         case AppActionType.SetDestination:
         case AppActionType.UpdateDownloadProgress:
         case AppActionType.Download:

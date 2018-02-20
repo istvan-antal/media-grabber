@@ -1,6 +1,6 @@
-import { BrowserWindow, Menu, app, ipcMain } from 'electron';
+import { BrowserWindow, Menu, app, ipcMain, dialog } from 'electron';
 import { join, dirname } from 'path';
-import { AppAction, AppActionType, updateDownloadState, DownloadState, updateDownloadProgress, settingsLoad, updateDownloadTitle, DownloadType } from './app/actions/app';
+import { AppAction, AppActionType, updateDownloadState, DownloadState, updateDownloadProgress, settingsLoad, updateDownloadTitle, DownloadType, setDestination } from './app/actions/app';
 import { AppState } from './app/reducers/app';
 import { createWriteStream, existsSync, writeFileSync, readFileSync } from 'fs';
 import { platform } from 'os';
@@ -81,6 +81,11 @@ const createWindow = () => {
         updateProgress(state);
 
         switch (action.type) {
+            case AppActionType.BrowseForDestination:
+                dialog.showOpenDialog(mainWindow, { properties: ['openDirectory', 'createDirectory'] }, paths => {
+                    event.sender.send('backendAction', setDestination(paths[0]));
+                });
+                break;
             case AppActionType.Download:
                 const currentDownload = state.downloads.filter(item => item.id === action.downloadId)[0]!;
                 event.sender.send('backendAction', updateDownloadState(action.downloadId, DownloadState.InProgress));
