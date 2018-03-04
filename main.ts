@@ -2,14 +2,21 @@ import { BrowserWindow, Menu, app, ipcMain, dialog } from 'electron';
 import { join, dirname } from 'path';
 import { AppAction, AppActionType, updateDownloadState, DownloadState, updateDownloadProgress, settingsLoad, updateDownloadTitle, DownloadType, setDestination } from './app/actions/app';
 import { AppState } from './app/reducers/app';
-import { createWriteStream, existsSync, writeFileSync, readFileSync } from 'fs';
+import { createWriteStream, existsSync, writeFileSync, readFileSync, mkdirSync } from 'fs';
 import { platform } from 'os';
+import { URL } from 'url';
+import { execFile } from 'child_process';
 const youtubedl = require('youtube-dl');
 const arch = (platform() === 'win32') ? 'win64' : 'macos64';
 
 process.env.PATH += `:${__dirname}/bin/${arch}`;
 
 const userDataPath = app.getPath('userData');
+
+if (!existsSync(userDataPath)) {
+    mkdirSync(userDataPath);
+}
+
 const settingsFile = `${userDataPath}/settings.json`;
 
 console.log(`Loading settings file: ${settingsFile}`);
@@ -88,9 +95,11 @@ const createWindow = () => {
                 break;
             case AppActionType.Download:
                 const currentDownload = state.downloads.filter(item => item.id === action.downloadId)[0]!;
+                const url = new URL(currentDownload.url);
                 event.sender.send('backendAction', updateDownloadState(action.downloadId, DownloadState.InProgress));
                 updateProgress(state);
                 if (currentDownload.type === DownloadType.Music) {
+                    if (url)
                     youtubedl.exec(
                         currentDownload.url,
                         // Optional arguments passed to youtube-dl.
@@ -104,12 +113,22 @@ const createWindow = () => {
                     return;
                 }
 
+                if (['bbc.co.uk', 'www.bbc.co.uk'].indexOf(url.hostname) !== -1) {
+                    const proc = execFile('get_iplayer', [currentDownload.url], { cwd: state.destination });
+                    proc.on('close', (err) => {
+                        console.error(err);
+                        event.sender.send('backendAction', updateDownloadProgress(action.downloadId, 100));
+                        event.sender.send('backendAction', updateDownloadState(action.downloadId, DownloadState.Complete));
+                    });
+                    return;
+                }
+
                 const media = youtubedl(
                     currentDownload.url,
                     // Optional arguments passed to youtube-dl.
-                    ['--format=18'],
+                    [],//['--format=18'],
                     // Additional options can be given for calling `child_process.execFile()`.
-                    { cwd: __dirname });
+                    { cwd: __dirname, maxBuffer: 10 * 1024 * 1024 });
 
                 let size = 0;
                 let fileName: string;

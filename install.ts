@@ -52,4 +52,32 @@ if (!existsSync(`./bin/${arch}`)) {
         });
         // copyFileSync(`./bin/${arch}/${basename(binaries[arch], '.zip')}/bin/ffserver${ext}`, `./bin/${arch}/ffserver${ext}`);
     });
+    
+    (async () => {
+        //https://downloads.sourceforge.net/project/atomicparsley/atomicparsley/AtomicParsley%20v0.9.0/AtomicParsley-MacOSX-0.9.0.zip
+        await download('https://netix.dl.sourceforge.net/project/atomicparsley/atomicparsley/AtomicParsley%20v0.9.0/AtomicParsley-MacOSX-0.9.0.zip', `./bin/${arch}/AtomicParsley-MacOSX-0.9.0.zip`);
+        execFileSync('unzip', ['AtomicParsley-MacOSX-0.9.0.zip'], {
+            cwd: `./bin/${arch}`,
+            stdio: 'inherit',
+        });
+        copyFileSync(`./bin/${arch}/AtomicParsley-MacOSX-0.9.0/AtomicParsley`, `./bin/${arch}/AtomicParsley`);
+        unlink(`./bin/${arch}/AtomicParsley-MacOSX-0.9.0.zip`, () => {
+        });
+        rimraf(`./bin/${arch}/AtomicParsley-MacOSX-0.9.0`, () => {
+        });
+        rimraf(`./bin/${arch}/__MACOSX`, () => {
+        });
+
+        //https://github.com/get-iplayer/get_iplayer/archive/v3.12.zip
+        await download('https://codeload.github.com/get-iplayer/get_iplayer/zip/v3.12', `./bin/${arch}/get-iplayer.zip`);
+        execFileSync('unzip', ['get-iplayer.zip'], {
+            cwd: `./bin/${arch}`,
+            stdio: 'inherit',
+        });
+        copyFileSync(`./bin/${arch}/get_iplayer-3.12/get_iplayer`, `./bin/${arch}/get_iplayer`);
+        unlink(`./bin/${arch}/get-iplayer.zip`, () => {
+        });
+        rimraf(`./bin/${arch}/get_iplayer-3.12`, () => {
+        });
+    })();
 }
