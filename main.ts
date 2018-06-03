@@ -115,6 +115,9 @@ const createWindow = () => {
 
                 if (['bbc.co.uk', 'www.bbc.co.uk'].indexOf(url.hostname) !== -1) {
                     const proc = execFile('get_iplayer', [currentDownload.url], { cwd: state.destination });
+                    proc.stdout.on('data', data => {
+                        console.log(data);
+                    })
                     proc.on('close', (err) => {
                         console.error(err);
                         event.sender.send('backendAction', updateDownloadProgress(action.downloadId, 100));

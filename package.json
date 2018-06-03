@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node dev-server.js",
     "test": "npm test",
-    "build": "node build.js",
+    "build": "react-ts-runtime",
     "prestart": "tsc main.ts && tsc --lib es2015 dev-server.ts",
     "prebuild": "tsc main.ts && tsc --lib es2015 build.ts",
     "package:mac": "electron-packager . 'Media Grabber' --overwrite --platform=darwin --arch=x64 --icon=icon.icns --out=out",
@@ -47,6 +47,7 @@
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-redux": "^5.0.6",
+    "react-ts-runtime": "0.0.1",
     "redux": "^3.7.2",
     "youtube-dl": "^1.12.2"
   },
