@@ -5,7 +5,7 @@
   "main": "main.js",
   "scripts": {
     "start": "node dev-server.js",
-    "test": "npm test",
+    "test": "echo 'test'",
     "build": "react-ts-runtime",
     "prestart": "tsc main.ts && tsc --lib es2015 dev-server.ts",
     "prebuild": "tsc main.ts && tsc --lib es2015 build.ts",
