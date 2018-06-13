@@ -29,7 +29,7 @@ export default class App extends React.Component<Props> {
                                 <option value={key}>{downloadTypes[key as DownloadType]}</option>
                             ))}
                         </select>
-                        <input disabled={!this.props.destination} onClick={e => { this.props.actions.download(this.props.downloadId + 1); }} type="button" value="Download" />
+                        <input disabled={!this.props.destination} onClick={_e => { this.props.actions.download(this.props.downloadId + 1); }} type="button" value="Download" />
                     </div>
                     <div className="row">
                         <input onChange={e => { this.props.actions.setDestination(e.target.value); }} value={this.props.destination} type="text" placeholder="Destination" />

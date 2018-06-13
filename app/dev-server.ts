@@ -1,4 +1,4 @@
-import { create } from './compiler';
+/*import { create } from './compiler';
 const WebpackDevServer = require('webpack-dev-server');
 
 import { join } from 'path';
@@ -22,6 +22,6 @@ const devServer = new WebpackDevServer(create({ hmr: true }), {
     hot: true,
     watchContentBase: true,
 });
-devServer.listen(9001, '0.0.0.0', (err: any) => {
+devServer.listen(9001, '0.0.0.0', (_err: any) => {
 
-});
+});*/

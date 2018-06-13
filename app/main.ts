@@ -1,7 +1,10 @@
 import { BrowserWindow, Menu, app, ipcMain, dialog } from 'electron';
-import { join, dirname } from 'path';
-import { AppAction, AppActionType, updateDownloadState, DownloadState, updateDownloadProgress, settingsLoad, updateDownloadTitle, DownloadType, setDestination } from './app/actions/app';
-import { AppState } from './app/reducers/app';
+import { join/*, dirname*/ } from 'path';
+import {
+    AppAction, AppActionType, updateDownloadState, DownloadState,
+    updateDownloadProgress, settingsLoad, updateDownloadTitle, DownloadType, setDestination,
+} from './actions/app';
+import { AppState } from './reducers/app';
 import { createWriteStream, existsSync, writeFileSync, readFileSync, mkdirSync } from 'fs';
 import { platform } from 'os';
 import { URL } from 'url';
@@ -55,7 +58,7 @@ const createWindow = () => {
         title: app.getName()
     });
 
-    const mainUrl = process.env.MAIN_APP_URL || join('file://', __dirname, '/dist/index.html');
+    const mainUrl = process.env.MAIN_APP_URL || join('file://', __dirname, '/index.html');
     console.log(`Loading: ${mainUrl}`);
 
     ipcMain.on('clientReady', (event: any) => {
@@ -164,6 +167,7 @@ const createWindow = () => {
                 media.on('end', function () {
                     event.sender.send('backendAction', updateDownloadState(action.downloadId, DownloadState.Complete));
                 });
+                break;
             case AppActionType.SetDestination:
                 settings.destination = state.destination;
                 writeFileSync(settingsFile, JSON.stringify(settings));

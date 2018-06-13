@@ -1,7 +1,7 @@
-import { createStore, applyMiddleware, MiddlewareAPI, Dispatch, Middleware, AnyAction, Action } from 'redux';
+import { createStore, applyMiddleware, MiddlewareAPI, Dispatch, Middleware, /*AnyAction, Action*/ } from 'redux';
 import { AppAction, AppActionType } from './actions/app';
-import { app, AppState } from './reducers/app';
-const { remote, ipcRenderer } = require('electron');
+import { app/*, AppState*/ } from './reducers/app';
+const { /*remote, */ipcRenderer } = require('electron');
 
 export const backendMiddleware: Middleware = <AppState>(store: MiddlewareAPI<AppState>) => (next: Dispatch<AppState>) => (originalAction: any) => {
     ipcRenderer.send('clientLog', JSON.stringify(store.getState()));
@@ -24,7 +24,7 @@ export const backendMiddleware: Middleware = <AppState>(store: MiddlewareAPI<App
 
 const store = createStore(app as any, applyMiddleware(backendMiddleware));
 
-ipcRenderer.on('backendAction', (e: any, action: AppAction) => {
+ipcRenderer.on('backendAction', (_e: any, action: AppAction) => {
     store.dispatch(action);
 });
 
