@@ -2,12 +2,12 @@
   "name": "media-grabber",
   "version": "0.0.2",
   "description": "A UI for youtube-dl.",
-  "main": "./app/index",
+  "main": "./src/index",
   "scripts": {
-    "start": "node dev-server.js",
+    "start": "bash ./scripts/start.sh",
     "test": "echo 'test'",
     "build": "react-ts-runtime build",
-    "prestart": "tsc app/main.ts --lib es5,es6,es7,dom --outDir dist && tsc app/dev-server.ts --lib es5,es6,es7,dom --outDir dist",
+    "_prestart": "tsc app/main.ts --lib es5,es6,es7,dom --outDir dist && tsc app/dev-server.ts --lib es5,es6,es7,dom --outDir dist",
     "prebuild": "tsc app/main.ts --lib es5,es6,es7,dom --outDir dist",
     "_package:mac": "electron-packager . 'Media Grabber' --overwrite --platform=darwin --arch=x64 --icon=icon.icns --out=out",
     "package:mac": "bash ./scripts/package.sh",
@@ -26,11 +26,11 @@
     "@types/react-dom": "^16.0.3",
     "@types/rimraf": "^2.0.2",
     "@types/youtube-dl": "^1.12.0",
-    "electron": "^2.0.2",
+    "electron": "^2.0.4",
     "electron-packager": "^12.1.0",
+    "react-ts-runtime": "^0.0.15",
     "rimraf": "^2.6.2",
-    "typescript": "^2.9.1",
-    "react-ts-runtime": "0.0.13"
+    "typescript": "^2.9.1"
   },
   "dependencies": {
     "@types/react-redux": "^6.0.1",

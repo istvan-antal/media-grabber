@@ -18,7 +18,7 @@
         "allowJs": false,
         "checkJs": false,
         "outDir": "./build",
-        "rootDir": "./app",
+        "rootDir": "./src",
         "noEmit": false,
         "strict": true,
         "noUnusedLocals": true,
