@@ -75,13 +75,13 @@ const createWindow = () => {
         const items = state.downloads.filter(item => item.state !== DownloadState.Complete);
         
         if (!items.length) {
-            mainWindow.setProgressBar(-1);
+            // mainWindow.setProgressBar(-1);
             return;
         }
 
-        mainWindow.setProgressBar(
+        /* mainWindow.setProgressBar(
             items.map(item => item.progress).reduce((a, b) => a + b, 0) / (items.length * 100)
-        );
+        );*/
     };
 
     ipcMain.on('clientAction', (event: any, args: [AppState, AppAction]) => {
