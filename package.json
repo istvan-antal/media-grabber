@@ -6,10 +6,7 @@
   "scripts": {
     "start": "bash ./scripts/start.sh",
     "test": "echo 'test'",
-    "build": "react-ts-runtime build",
-    "_prestart": "tsc app/main.ts --lib es5,es6,es7,dom --outDir dist && tsc app/dev-server.ts --lib es5,es6,es7,dom --outDir dist",
-    "prebuild": "tsc app/main.ts --lib es5,es6,es7,dom --outDir dist",
-    "_package:mac": "electron-packager . 'Media Grabber' --overwrite --platform=darwin --arch=x64 --icon=icon.icns --out=out",
+    "build": "bash ./scripts/build.sh",
     "package:mac": "bash ./scripts/package.sh",
     "prepackage:mac": "npm run build"
   },
